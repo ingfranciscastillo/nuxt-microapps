@@ -12,9 +12,12 @@
   "dependencies": {
     "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.2.0",
+    "@nuxt/eslint": "^1.9.0",
+    "@nuxt/fonts": "^0.11.4",
     "@pinia/nuxt": "^0.11.2",
     "@tailwindcss/vite": "^4.1.12",
     "@tanstack/vue-query": "^5.85.9",
+    "eslint": "^9.34.0",
     "nuxt": "^4.0.3",
     "pinia": "^3.0.3",
     "tailwindcss": "^4.1.12",
