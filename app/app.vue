@@ -9,6 +9,9 @@
         <template #body>
           <NuxtPage />
         </template>
+        <template #footer>
+          <Footer />
+        </template>
       </UDashboardPanel>
     </UDashboardGroup>
   </UApp>
@@ -18,6 +21,7 @@
 import { useThemeStore } from './stores/theme'
 import AppHeader from './components/AppHeader.vue'
 import AppSidebar from './components/AppSidebar.vue'
+import Footer from './components/layout/Footer.vue'
 
 // Inicializar tema
 const themeStore = useThemeStore()

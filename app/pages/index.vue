@@ -1,14 +1,12 @@
 <template>
-  <UDashboardPanel id="main">
-    
-    <UPageHero orientation="horizontal" title="Micro Apps" description="Explora todas las herramientas útiles que tenemos para ti."/>
-
-    <MicroApps />
-  </UDashboardPanel>
+  <UPageHero 
+    orientation="horizontal" 
+    title="Micro Apps" 
+    description="Explora todas las herramientas útiles que tenemos para ti." headline="New release"
+  />
 </template>
 
 <script setup>
-import MicroApps from '@/components/layout/MicroApps.vue'
 
 // Configuración SEO
 useHead({
