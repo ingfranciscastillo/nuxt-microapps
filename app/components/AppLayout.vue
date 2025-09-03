@@ -1,44 +1,30 @@
 <template>
-  <UApp>
-
+  <div class="min-h-screen bg-background">
+    <!-- Sidebar -->
     <AppSidebar 
       :is-open="sidebarOpen" 
       @close="sidebarOpen = false" 
     />
-
-     <div class="lg:pl-72">
+    
+    <!-- Main content -->
+    <div class="lg:pl-72">
       <!-- Header -->
       <AppHeader @toggle-sidebar="sidebarOpen = !sidebarOpen" />
       
       <!-- Page content -->
       <main class="p-6">
         <div class="mx-auto max-w-7xl">
-          <NuxtPage />
+          <slot />
         </div>
       </main>
     </div>
-  
-  </UApp>
+  </div>
 </template>
 
 <script setup>
 import AppSidebar from '~/components/AppSidebar.vue'
 import AppHeader from '~/components/AppHeader.vue'
 
-import { useThemeStore } from './stores/theme'
-
 // Estado del sidebar
 const sidebarOpen = ref(false)
-
-// Inicializar tema
-const themeStore = useThemeStore()
-onMounted(() => {
-  themeStore.initTheme()
-})
 </script>
-
-<style scoped>
-  main {
-    font-family: 'Inter', system-ui, sans-serif;
-  }
-</style>
