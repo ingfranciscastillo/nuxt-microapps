@@ -1,5 +1,5 @@
 <template>
-  <UDashboardNavbar :title="pageTitle" icon="ph:squares-four-bold">
+  <UDashboardNavbar :title="pageTitle">
 
       <div class="flex items-center gap-4">
         <!-- Mobile menu button -->
@@ -34,7 +34,7 @@ const themeStore = useThemeStore()
 
 // Títulos y subtítulos de páginas
 const pageData = {
-  '/': { title: 'Dashboard', subtitle: 'Bienvenido a tus micro-aplicaciones' },
+  '/': { title: 'Micro Apps', subtitle: 'Bienvenido a tus micro-aplicaciones' },
   '/currency-converter': { title: 'Conversor de Divisas', subtitle: 'Convierte entre diferentes monedas' },
   '/unit-converter': { title: 'Conversor de Unidades', subtitle: 'Longitud, peso, temperatura y más' },
   '/bmi-calculator': { title: 'Calculadora IMC', subtitle: 'Calcula tu índice de masa corporal' },
@@ -50,6 +50,6 @@ const pageData = {
 }
 
 const pageTitle = computed(() => {
-  return pageData[route.path]?.title || 'Micro Apps Dashboard'
+  return pageData[route.path]?.title || 'Micro Apps'
 })
 </script>
