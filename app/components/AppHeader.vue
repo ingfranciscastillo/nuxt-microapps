@@ -1,47 +1,31 @@
 <template>
-  <UCard class="sticky top-0 z-30 rounded-none border-b border-divider shadow-small">
-    <div class="flex flex-row items-center justify-between px-6 py-4">
-      <!-- Left side -->
+  <UDashboardNavbar :title="pageTitle" icon="ph:squares-four-bold">
+
       <div class="flex items-center gap-4">
         <!-- Mobile menu button -->
         <UButton
           variant="light"
           size="sm"
-          isIconOnly="true"
+          icon="ph:list-bold"
           class="lg:hidden"
           @click="$emit('toggleSidebar')"
-        >
-          <Icon icon="ph:list-bold" class="h-5 w-5" />
-        </UButton>
-
-        <!-- Page title -->
-        <div>
-          <h1 class="text-lg font-semibold text-foreground">{{ pageTitle }}</h1>
-          <p class="text-xs text-foreground-500">{{ pageSubtitle }}</p>
-        </div>
+        />
       </div>
 
-      <!-- Right side -->
-      <div class="flex items-center gap-2">
-        <!-- Theme toggle -->
+
+      <template #right>
         <UButton
           variant="ghost"
           size="sm"
-          isIconOnly
-          @click="themeStore.toggleTheme()"
-        >
-          <Icon 
-            :icon="themeStore.isDark ? 'ph:sun-bold' : 'ph:moon-bold'" 
-            class="h-5 w-5" 
+          :icon="themeStore.isDark ? 'ph:sun-bold' : 'ph:moon-bold'"
+            @click="themeStore.toggleTheme()"
           />
-        </UButton>
-      </div>
-    </div>
-  </UCard>
+      </template>
+
+  </UDashboardNavbar>
 </template>
 
 <script setup>
-import { Icon } from '@iconify/vue'
 
 defineEmits(['toggleSidebar'])
 
@@ -67,9 +51,5 @@ const pageData = {
 
 const pageTitle = computed(() => {
   return pageData[route.path]?.title || 'Micro Apps Dashboard'
-})
-
-const pageSubtitle = computed(() => {
-  return pageData[route.path]?.subtitle || 'Herramientas útiles para tu día a día'
 })
 </script>

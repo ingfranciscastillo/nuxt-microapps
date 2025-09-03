@@ -1,34 +1,20 @@
 <template>
   <UApp>
-
-    <AppSidebar 
-      :is-open="sidebarOpen" 
-      @close="sidebarOpen = false" 
-    />
-
-     <div class="lg:pl-72">
-      <!-- Header -->
-      <AppHeader @toggle-sidebar="sidebarOpen = !sidebarOpen" />
-      
-      <!-- Page content -->
-      <main class="p-6">
-        <div class="mx-auto max-w-7xl">
-          <NuxtPage />
-        </div>
-      </main>
-    </div>
-  
+    <UDashboardPanel>
+      <template #header>
+        <AppHeader />
+      </template>
+      <template #content>
+        <NuxtPage />
+      </template>
+    </UDashboardPanel>
+    
   </UApp>
 </template>
 
 <script setup>
-import AppSidebar from '~/components/AppSidebar.vue'
-import AppHeader from '~/components/AppHeader.vue'
-
 import { useThemeStore } from './stores/theme'
-
-// Estado del sidebar
-const sidebarOpen = ref(false)
+import AppHeader from './components/AppHeader.vue'
 
 // Inicializar tema
 const themeStore = useThemeStore()

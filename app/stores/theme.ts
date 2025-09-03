@@ -16,7 +16,6 @@ export const useThemeStore = defineStore('theme', () => {
     }
   }
 
-  // Actualizar tema en el DOM
   const updateTheme = () => {
     if (import.meta.client) {
       if (isDark.value) {
@@ -28,7 +27,6 @@ export const useThemeStore = defineStore('theme', () => {
     }
   }
 
-  // Toggle tema
   const toggleTheme = () => {
     isDark.value = !isDark.value
     updateTheme()
