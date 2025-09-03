@@ -15,18 +15,14 @@
         </div>
       </template>
       <UContainer>
-        <!-- Aquí irá el componente BMICalculator -->
-        <div class="text-center py-12">
-          <UIcon name="ph:heart-bold" class="mx-auto h-16 w-16 text-red-500/30 mb-4" />
-          <p class="text-foreground-400">Componente calculadora de IMC</p>
-          <p class="text-small text-foreground-300">Con rangos informativos y resultados</p>
-        </div>
+        <BMICalculator />
       </UContainer>
     </UCard>
   </div>
 </template>
 
 <script setup>
+import BMICalculator from '~/components/microapps/BMICalculator.vue'
 
 useHead({
   title: 'Calculadora IMC - Micro Apps'
