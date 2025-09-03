@@ -34,7 +34,7 @@ const themeStore = useThemeStore()
 
 // Títulos y subtítulos de páginas
 const pageData = {
-  '/': { title: 'Micro Apps', subtitle: 'Bienvenido a tus micro-aplicaciones' },
+  '/': { title: 'UtiliApp', subtitle: 'Bienvenido a tus micro-aplicaciones' },
   '/currency-converter': { title: 'Conversor de Divisas', subtitle: 'Convierte entre diferentes monedas' },
   '/unit-converter': { title: 'Conversor de Unidades', subtitle: 'Longitud, peso, temperatura y más' },
   '/bmi-calculator': { title: 'Calculadora IMC', subtitle: 'Calcula tu índice de masa corporal' },
