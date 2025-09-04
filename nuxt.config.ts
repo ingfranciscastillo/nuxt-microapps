@@ -3,10 +3,10 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      apiUrlExchange: "",
+      apiUrlExchange: process.env.NUXT_PUBLIC_API_URL_EXCHANGE,
     },
     private: {
-      apiKeyExchange: "",
+      apiKeyExchange: process.env.NUXT_PRIVATE_API_KEY_EXCHANGE,
     }
   },
   compatibilityDate: '2025-07-15',
