@@ -1,6 +1,14 @@
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      apiUrlExchange: "",
+    },
+    private: {
+      apiKeyExchange: "",
+    }
+  },
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   css: ["~/assets/css/main.css"],
@@ -15,6 +23,9 @@ export default defineNuxtConfig({
         {name: "viewport", content: "width=device-width, initial-scale=1"},
       ]
     },
+  },
+  routeRules: {
+    "/api/": {cache: {maxAge: 60 * 60}} // 1 hour
   },
   vite: {
     plugins: [tailwindcss()],

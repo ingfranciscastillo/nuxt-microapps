@@ -15,12 +15,7 @@
         </div>
       </template>
       <UContainer>
-        <!-- Aquí irá el componente CurrencyConverter -->
-        <div class="text-center py-12">
-          <Icon icon="ph:currency-dollar-bold" class="mx-auto h-16 w-16 text-primary/30 mb-4" />
-          <p class="text-foreground-400">Componente de conversor de divisas</p>
-          <p class="text-small text-foreground-300">Próximamente con TanStack Query</p>
-        </div>
+        <CurrencyConverter />
       </UContainer>
     </UCard>
   </div>
@@ -28,8 +23,9 @@
 
 <script setup>
 import { Icon } from '@iconify/vue'
+import CurrencyConverter from '~/components/microapps/CurrencyConverter.vue'
 
 useHead({
-  title: 'Calculadora IMC - Micro Apps'
+  title: 'Conversor de Divisas - UtiliApp'
 })
 </script>

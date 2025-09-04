@@ -9,7 +9,7 @@
         <UInputNumber
           v-model="weight"
           placeholder="70"
-          class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500"
+          variant="outline"
         />
       </div>
       
@@ -20,7 +20,7 @@
         <UInputNumber
           v-model="height"
           placeholder="175"
-          class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500"
+          variant="outline"
         />
       </div>
     </div>

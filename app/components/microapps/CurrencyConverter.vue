@@ -2,47 +2,42 @@
   <div class="space-y-6">
     <!-- Formulario de conversión -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="space-y-2">
-        <label class="text-small font-medium text-foreground-700">
+      <div>
+        <label class="block mb-2 text-small font-medium text-foreground-700">
           Cantidad y moneda de origen
         </label>
         <div class="flex gap-2">
-          <UInput
+          <UInputNumber
             v-model="fromAmount"
-            type="number"
             placeholder="100"
-            variant="bordered"
+            variant="outline"
             class="flex-1"
+            :is-disabled="loadingCurrencies"
           />
-          <USelect
+          <USelectMenu
             v-model="fromCurrency"
             placeholder="USD"
-            variant="bordered"
+            variant="outline"
             class="w-32"
-          >
-            <SelectItem key="USD">USD</SelectItem>
-            <SelectItem key="EUR">EUR</SelectItem>
-            <SelectItem key="GBP">GBP</SelectItem>
-            <SelectItem key="JPY">JPY</SelectItem>
-          </USelect>
+            :items="currencies"
+            :is-disabled="loadingCurrencies"
+            value-key="value"
+          />
         </div>
       </div>
       
-      <div class="space-y-2">
-        <label class="text-small font-medium text-foreground-700">
+      <div>
+        <label class="block mb-2 text-small font-medium text-foreground-700">
           Moneda de destino
         </label>
-        <USelect
+          <USelectMenu
             v-model="toCurrency"
-          placeholder="EUR"
-          variant="bordered"
-          
-        >
-          <SelectItem key="EUR">EUR</SelectItem>
-          <SelectItem key="USD">USD</SelectItem>
-          <SelectItem key="GBP">GBP</SelectItem>
-          <SelectItem key="JPY">JPY</SelectItem>
-        </USelect>
+            placeholder="EUR"
+            variant="outline"
+            class="w-32"
+            :items="currencies"
+            value-key="value"
+          />
       </div>
     </div>
 
@@ -65,36 +60,71 @@
       color="primary"
       size="lg"
       class="w-full"
-      :isLoading="isLoading"
+      :is-loading="isLoading"
       @click="convertCurrency"
     >
       <Icon icon="ph:arrows-left-right-bold" class="w-4 h-4 mr-2" />
-      Convertir
+      {{ isLoading ? "Cargando..." : "Convertir" }}
     </UButton>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Icon } from '@iconify/vue'
+import { ref, watch } from "vue";
+import { useQuery } from "@tanstack/vue-query";
 
-// Estados reactivos
-const fromAmount = ref(100)
-const fromCurrency = ref('USD')
-const toCurrency = ref('EUR')
-const convertedAmount = ref('85.50')
-const exchangeRate = ref('0.855')
-const isLoading = ref(false)
+const fromAmount = ref<number>(100);
+const fromCurrency = ref<string>("USD");
+const toCurrency = ref<string>("EUR");
+const convertedAmount = ref<number | null>(null);
+const exchangeRate = ref<number | null>(null);
+const isLoading = ref<boolean>(false);
+const currencies = ref<{ label: string; value: string }[]>([]);
 
-// Función de conversión (placeholder)
-const convertCurrency = async () => {
-  isLoading.value = true
-  
-  // Simular API call
-  await new Promise(resolve => setTimeout(resolve, 1000))
-  
-  // Aquí iría la lógica real con TanStack Query
-  convertedAmount.value = (fromAmount.value * parseFloat(exchangeRate.value)).toFixed(2)
-  
-  isLoading.value = false
+const fetchCurrencies = async () => {
+  const res = await $fetch<{ items: { label: string; value: string }[] }>("/api/currencies");
+  return res.items;
+};
+
+const { data: currencyData, isLoading: loadingCurrencies } = useQuery({
+  queryKey: ["currencies"],
+  queryFn: fetchCurrencies,
+  refetchOnWindowFocus: false,
+  staleTime: 1000 * 60 * 60, // refresca cada hora o más
+});
+
+if (currencyData.value) {
+  currencies.value = currencyData.value;
 }
+
+const fetchRate = async () => {
+  const {conversion_rate} = await $fetch("/api/exchange-rate", {
+    query: {
+      from: fromCurrency.value,
+      to: toCurrency.value
+    }
+  });
+  console.log(conversion_rate);
+  return conversion_rate;
+}
+
+const { data, isFetching, refetch } = useQuery({
+  queryKey: [exchangeRate, fromCurrency, toCurrency],
+  queryFn: fetchRate,
+  enabled: true,
+});
+
+watch([data, isFetching], () => {
+  isLoading.value = isFetching.value;
+  if (data.value) {
+    exchangeRate.value = data.value;
+    convertedAmount.value = Number((fromAmount.value * data.value).toFixed(2));
+  }
+});
+
+const convertCurrency = async () => {
+  await refetch();
+};
+
 </script>
