@@ -15,12 +15,7 @@
         </div>
       </template>
       <UContainer>
-        <!-- Aquí irá el componente PomodoroTimer -->
-        <div class="text-center py-12">
-          <Icon icon="ph:clock-bold" class="mx-auto h-16 w-16 text-success/30 mb-4" />
-          <p class="text-foreground-400">Componente temporizador Pomodoro</p>
-          <p class="text-small text-foreground-300">Con sesiones y descansos configurables</p>
-        </div>
+        <PomodoroTimer />
       </UContainer>
     </UCard>
   </div>
@@ -28,6 +23,7 @@
 
 <script setup>
 import { Icon } from '@iconify/vue'
+import PomodoroTimer from '~/components/microapps/PomodoroTimer.vue'
 
 useHead({
   title: 'Temporizador Pomodoro - Micro Apps'

@@ -91,15 +91,12 @@
   <UPageGrid>
     <UPageCard
         v-for="(app, index) in microApps"
-        v-bind="card"
         :key="index"
         :title="app.title"
         :description="app.description"
         :icon="app.icon"
         :to="app.to"
         variant="outline"
-        spotlight
-        spotlight-color="primary"
         />    
     </UPageGrid>
 </template>

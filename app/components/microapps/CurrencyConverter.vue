@@ -9,7 +9,7 @@
         <div class="flex gap-2">
           <UInputNumber
             v-model="fromAmount"
-            placeholder="100"
+            placeholder="1"
             variant="outline"
             class="flex-1"
             :is-disabled="loadingCurrencies"
@@ -41,7 +41,6 @@
       </div>
     </div>
 
-    <!-- Resultado -->
     <UCard class="bg-primary/5 border border-primary/20">
       <UContainer class="text-center py-8">
         <Icon icon="ph:currency-dollar-bold" class="mx-auto h-8 w-8 text-primary mb-2" />
@@ -55,7 +54,6 @@
       </UContainer>
     </UCard>
 
-    <!-- Botón convertir -->
     <UButton
       color="primary"
       size="lg"
@@ -74,7 +72,7 @@ import { Icon } from '@iconify/vue'
 import { ref, watch } from "vue";
 import { useQuery } from "@tanstack/vue-query";
 
-const fromAmount = ref<number>(100);
+const fromAmount = ref<number>(1);
 const fromCurrency = ref<string>("USD");
 const toCurrency = ref<string>("EUR");
 const convertedAmount = ref<number | null>(null);
@@ -105,7 +103,6 @@ const fetchRate = async () => {
       to: toCurrency.value
     }
   });
-  console.log(conversion_rate);
   return conversion_rate;
 }
 
