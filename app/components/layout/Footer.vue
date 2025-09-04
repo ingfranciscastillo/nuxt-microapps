@@ -3,17 +3,17 @@
 const items = [
   {
     label: 'Inicio',
-    to: 'https://go.nuxt.com/figma-ui',
+    to: '/',
     target: '_blank'
   },
   {
     label: 'Micro Apps',
-    to: 'https://stackblitz.com/edit/nuxt-ui',
+    to: '/apps',
     target: '_blank'
   },
   {
     label: 'Contacto',
-    to: 'https://github.com/nuxt/ui/releases',
+    to: 'https://github.com/ingfranciscastillo',
     target: '_blank'
   }
 ]
@@ -31,6 +31,7 @@ const items = [
             <UButton icon="ph:linkedin-logo-bold" target="_blank" to="https://www.linkedin.com/in/ingfranciscastillo/" aria-label="LinkedIn" variant="ghost" />
             <UButton icon="ph:twitter-logo-bold" target="_blank" to="https://x.com/ingfranciscastillo" aria-label="Twitter" variant="ghost" />
             <UButton icon="ph:instagram-logo-bold" target="_blank" to="https://www.instagram.com/ingfranciscastillo/" aria-label="Instagram" variant="ghost" />
+            <UButton icon="simple-icons:buymeacoffee" target="_blank" to="https://www.buymeacoffee.com/ingfranciscastillo" aria-label="Buy Me a Coffee" variant="ghost" />
         </template>
     </UFooter>
 </template>

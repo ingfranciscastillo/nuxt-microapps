@@ -14,18 +14,20 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
   app: {
     head: {
-      title: "MicroApps",
+      title: "UtiliApp",
       htmlAttrs: {
         lang: "es",
       },
       meta: [
         {charset: "utf-8"},
         {name: "viewport", content: "width=device-width, initial-scale=1"},
+        {name: "description", content: "UtiliApp es una plataforma que te ofrece una variedad de micro-aplicaciones útiles para tu día a día."},
+        {name: "keywords", content: "micro-aplicaciones, utilidades, herramientas, día a día"},
       ]
     },
   },
   routeRules: {
-    "/api/": {cache: {maxAge: 60 * 60}} // 1 hour
+    "/api/": {cache: {maxAge: 60 * 60}}
   },
   vite: {
     plugins: [tailwindcss()],

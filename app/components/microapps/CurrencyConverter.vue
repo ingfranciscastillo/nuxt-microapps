@@ -16,7 +16,7 @@
           />
           <USelectMenu
             v-model="fromCurrency"
-            placeholder="USD"
+            :placeholder="loadingCurrencies ? 'Cargando...' : 'USD'"
             variant="outline"
             class="w-32"
             :items="currencies"
@@ -32,10 +32,11 @@
         </label>
           <USelectMenu
             v-model="toCurrency"
-            placeholder="EUR"
+            :placeholder="loadingCurrencies ? 'Cargando...' : 'EUR'"
             variant="outline"
             class="w-32"
             :items="currencies"
+            :is-disabled="loadingCurrencies"
             value-key="value"
           />
       </div>
@@ -69,7 +70,7 @@
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { useQuery } from "@tanstack/vue-query";
 
 const fromAmount = ref<number>(1);
@@ -92,9 +93,12 @@ const { data: currencyData, isLoading: loadingCurrencies } = useQuery({
   staleTime: 1000 * 60 * 60, // refresca cada hora o más
 });
 
-if (currencyData.value) {
-  currencies.value = currencyData.value;
-}
+// Watcher para actualizar currencies cuando se carguen los datos
+watch(currencyData, (newData) => {
+  if (newData) {
+    currencies.value = newData;
+  }
+}, { immediate: true });
 
 const fetchRate = async () => {
   const {conversion_rate} = await $fetch("/api/exchange-rate", {
@@ -107,9 +111,9 @@ const fetchRate = async () => {
 }
 
 const { data, isFetching, refetch } = useQuery({
-  queryKey: [exchangeRate, fromCurrency, toCurrency],
+  queryKey: ["exchange-rate", fromCurrency, toCurrency],
   queryFn: fetchRate,
-  enabled: true,
+  enabled: computed(() => !loadingCurrencies.value && !!fromCurrency.value && !!toCurrency.value),
 });
 
 watch([data, isFetching], () => {
