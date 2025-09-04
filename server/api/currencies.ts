@@ -1,5 +1,5 @@
-export default defineEventHandler(async () => {
-  const config = useRuntimeConfig();
+export default defineEventHandler(async (event) => {
+  const config = useRuntimeConfig(event);
   const url = `https://v6.exchangerate-api.com/v6/${config.private.apiKeyExchange}/codes`;
   const data = await $fetch<{ result: string; supported_codes: [string, string][] }>(url);
 
