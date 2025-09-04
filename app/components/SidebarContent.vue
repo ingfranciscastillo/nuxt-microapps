@@ -44,6 +44,7 @@ const microApps = [
   { name: 'Notas Rápidas', href: '/sticky-notes', icon: 'ph:note-bold' },
   { name: 'Agenda Simple', href: '/agenda', icon: 'ph:calendar-bold' },
   { name: 'Lista de Compras', href: '/shopping-list', icon: 'ph:shopping-cart-bold' },
-  { name: 'Diccionario', href: '/dictionary', icon: 'ph:book-open-bold' }
+  { name: 'Diccionario', href: '/dictionary', icon: 'ph:book-open-bold' },
+  { name: 'Traductor', href: '/translator', icon: 'ph:translate-bold' }
 ]
 </script>

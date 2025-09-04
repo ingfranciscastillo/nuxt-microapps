@@ -83,6 +83,13 @@
     icon: 'ph:book-open-bold',
     description: 'Busca definiciones al instante.',
     category: 'Educación'
+  },
+  { 
+    title: 'Traductor', 
+    to: '/translator', 
+    icon: 'ph:translate-bold',
+    description: 'Traduce texto entre múltiples idiomas',
+    category: 'Utilidades'
   }
 ])
 </script>

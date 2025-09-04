@@ -15,12 +15,7 @@
         </div>
       </template>
       <UContainer>
-        <!-- Aquí irá el componente Dictionary -->
-        <div class="text-center py-12">
-          <UIcon name="ph:book-open-bold" class="mx-auto h-16 w-16 text-blue-500/30 mb-4" />
-          <p class="text-foreground-400">Componente diccionario</p>
-          <p class="text-small text-foreground-300">Componente diccionario</p>
-        </div>
+        <Dictionary />
       </UContainer>
     </UCard>
   </div>
@@ -28,6 +23,7 @@
 
 
 <script setup>
+import Dictionary from '~/components/microapps/Dictionary.vue'
 
 useHead({
   title: 'Diccionario - Micro Apps'
