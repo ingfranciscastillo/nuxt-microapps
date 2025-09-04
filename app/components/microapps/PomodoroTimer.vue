@@ -75,7 +75,7 @@ const totalSessions = ref(4);
 const isRunning = ref(false);
 const isWorkTime = ref(true);
 const secondsLeft = ref(workMinutes.value * 60);
-let timer: number | null = null;
+let timer: NodeJS.Timeout | null = null;
 
 const startTimer = () => {
   if (isRunning.value) return;

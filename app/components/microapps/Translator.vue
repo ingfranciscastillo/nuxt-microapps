@@ -1,13 +1,13 @@
 <template>
   <div class="space-y-6">
-    <!-- Input Section -->
     <div class="space-y-4">
       <div class="flex gap-2">
-        <USelect
+        <USelectMenu
           v-model="sourceLanguage"
-          :options="languages"
+          :items="languages"
           placeholder="Idioma origen"
           class="w-40"
+          value-key="value"
         />
         <UButton
             variant="outline"
@@ -15,16 +15,16 @@
           icon="i-lucide-arrow-left-right"
           @click="swapLanguages"
         />
-        <USelect
+        <USelectMenu
           v-model="targetLanguage"
-          :options="languages"
+          :items="languages"
+          value-key="value"
           placeholder="Idioma destino"
           class="w-40"
         />
       </div>
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Source Text -->
         <div class="space-y-2">
           <label class="text-sm font-medium text-muted-foreground">
             {{ getLanguageName(sourceLanguage) }}
@@ -37,7 +37,6 @@
           />
         </div>
         
-        <!-- Target Text -->
         <div class="space-y-2">
           <div class="flex items-center justify-between">
             <label class="text-sm font-medium text-muted-foreground">
@@ -64,7 +63,6 @@
       </div>
     </div>
 
-    <!-- Action Buttons -->
     <div class="flex gap-2">
       <UButton
         :loading="loading"
@@ -86,7 +84,6 @@
       </UButton>
     </div>
 
-    <!-- Error State -->
     <UAlert
       v-if="error"
       title="Error"
@@ -100,6 +97,8 @@
 
 <script setup>
 import { ref } from 'vue'
+
+const toast = useToast()
 
 const sourceText = ref('')
 const translatedText = ref('')
@@ -133,7 +132,6 @@ const swapLanguages = () => {
   sourceLanguage.value = targetLanguage.value
   targetLanguage.value = temp
   
-  // Intercambiar textos también
   const tempText = sourceText.value
   sourceText.value = translatedText.value
   translatedText.value = tempText
@@ -156,8 +154,7 @@ const translateText = async () => {
     })
     
     translatedText.value = response.translatedText
-  } catch (err) {
-    console.error('Translation error:', err)
+  } catch (error) {
     error.value = 'Error al traducir el texto. Intenta de nuevo.'
   } finally {
     loading.value = false
@@ -167,9 +164,14 @@ const translateText = async () => {
 const copyToClipboard = async () => {
   try {
     await navigator.clipboard.writeText(translatedText.value)
-    // Aquí podrías agregar una notificación de éxito
-  } catch (err) {
-    console.error('Error copying to clipboard:', err)
+    toast.add({
+      title: 'Texto copiado',
+      description: 'Texto copiado al portapapeles',
+      color: 'primary',
+      icon: 'i-lucide-copy'
+    })
+  } catch (error) {
+    console.error('Error copying to clipboard:', error)
   }
 }
 
