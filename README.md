@@ -1,75 +1,27 @@
-# Nuxt Minimal Starter
+# UtiliApp 🛠️
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+**UtiliApp** es una aplicación de utilidades todo-en-uno que reúne en un solo lugar varias herramientas prácticas y rápidas para el día a día.  
+Hecha con ❤️ para ser tu kit de productividad personal.
 
-## Setup
+## 🚀 Funcionalidades actuales
 
-Make sure to install dependencies:
+- ⚖️ **Calculadora BMI (Índice de Masa Corporal)** – Calcula tu índice de masa corporal y conoce tu estado físico.
+- 💱 **Convertidor de divisas** – Convierte entre diferentes monedas en tiempo real.
+- ⏳ **Pomodoro Timer** – Técnica de productividad con ciclos de enfoque y descanso.
+- 🖼️ **Generador de memes** – Sube una imagen, agrega texto y crea memes fácilmente.
+- 📖 **Diccionario** – Busca definiciones rápidas de palabras.
+- 🌐 **Traductor** – Traduce textos a varios idiomas.
+- ... ¡y más utilidades en camino!
 
-```bash
-# npm
-npm install
+## 🏗️ Tecnologías usadas
 
-# pnpm
-pnpm install
+- **Framework**: [Nuxt 3](https://nuxt.com/)
+- **UI**: [NuxtUI](https://ui4.nuxt.com/)
+- **Estado & fetching**: [Pinia](https://pinia.vuejs.org/) + [TanStack Vue Query](https://tanstack.com/query/latest/docs/vue/overview)
+- **Backend/APIs**:
+  - [ExchangeRate API](https://www.exchangerate-api.com/) _(para conversiones de divisas)_
+  - [Dictionary API](https://freedictionaryapi.com/) _(para definiciones)_
+  - [LibreTranslate](https://libretranslate.com/) _(para traducciones)_
 
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+**UtiliApp** es una aplicación de utilidades todo-en-uno que reúne en un solo lugar varias herramientas prácticas y rápidas para el día a día.
+Hecha con ❤️ para ser tu kit de productividad personal.
