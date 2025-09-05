@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6">
+  <div class="space-y-6 justify-center items-center flex flex-col">
     <!-- Timer display -->
     <div class="text-center">
       <div class="inline-flex items-center justify-center w-48 h-48 bg-primary-100 dark:bg-primary-900/50 rounded-full">
@@ -33,7 +33,7 @@
     </div>
 
     <!-- Configuración -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-sm">
       <div>
         <label class="block text-gray-700 dark:text-gray-300 mb-1">
           Trabajo (min)
