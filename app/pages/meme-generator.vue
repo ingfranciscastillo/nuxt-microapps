@@ -15,12 +15,7 @@
         </div>
       </template>
       <UContainer>
-        <!-- Aquí irá el componente MemeGenerator -->
-        <div class="text-center py-12">
-          <Icon icon="ph:smiley-bold" class="mx-auto h-16 w-16 text-primary/30 mb-4" />
-          <p class="text-foreground-400">Componente generador de memes</p>
-          <p class="text-small text-foreground-300">Upload de imagen y editor de texto</p>
-        </div>
+        <MemeGenerator />
       </UContainer>
     </UCard>
   </div>
@@ -28,6 +23,7 @@
 
 <script setup>
 import { Icon } from '@iconify/vue'
+import MemeGenerator from '~/components/microapps/meme-generator.vue'
 
 useHead({
   title: 'Generador de Memes - Micro Apps'
