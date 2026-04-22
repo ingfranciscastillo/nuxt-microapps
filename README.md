@@ -19,7 +19,7 @@ Hecha con ❤️ para ser tu kit de productividad personal.
 
 ## 🏗️ Tecnologías usadas
 
-- **Framework**: [Nuxt 3](https://nuxt.com/)
+- **Framework**: [Nuxt 4](https://nuxt.com/)
 - **UI**: [NuxtUI](https://ui4.nuxt.com/)
 - **Estado & fetching**: [Pinia](https://pinia.vuejs.org/) + [TanStack Vue Query](https://tanstack.com/query/latest/docs/vue/overview)
 - **Backend/APIs**:
