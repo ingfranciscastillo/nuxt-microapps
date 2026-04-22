@@ -34,7 +34,7 @@
       <!-- Word Header -->
       <UCard class="bg-primary/5 border border-primary/20">
         <UContainer class="text-center py-6">
-          <Icon icon="ph:book-open-bold" class="mx-auto h-8 w-8 text-primary mb-3" />
+          <UIcon name="i-ph-book-open-bold" class="mx-auto h-8 w-8 text-primary mb-3" />
           <h1 class="text-3xl font-bold text-primary mb-2">{{ dictionaryData.word }}</h1>
           <p class="text-sm text-muted-foreground">Definición encontrada</p>
         </UContainer>
@@ -222,7 +222,7 @@
     <!-- Empty State -->
     <UCard v-if="!dictionaryData && !loading && !error" class="bg-primary/5 border border-primary/20">
       <UContainer class="text-center py-8">
-        <Icon icon="ph:book-open-bold" class="mx-auto h-8 w-8 text-primary mb-3" />
+        <UIcon name="i-ph-book-open-bold" class="mx-auto h-8 w-8 text-primary mb-3" />
         <p class="text-lg font-medium text-primary mb-2">Diccionario</p>
         <p class="text-sm text-muted-foreground">Busca una palabra para ver su definición, sinónimos y más información</p>
       </UContainer>
@@ -231,7 +231,7 @@
 </template>
 
 <script setup>
-import { Icon } from '@iconify/vue'
+
 import { ref } from 'vue'
 
 const searchTerm = ref('')
@@ -288,7 +288,6 @@ const translateText = async (text) => {
     return text // Devolver texto original si falla la traducción
   }
 }
-
 
 const fetchDefinition = async () => {
   if (!searchTerm.value.trim()) {

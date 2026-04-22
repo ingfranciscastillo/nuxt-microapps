@@ -103,7 +103,7 @@ const startTimer = () => {
         title: isWorkTime.value ? "Hora de trabajar" : "Hora de descansar",
         description: "Tiempo restante: " + formattedTime.value,
         color: isWorkTime.value ? "primary" : "secondary",
-        icon: isWorkTime.value ? "ph:clock-bold" : "ph:clock-bold"
+        icon: isWorkTime.value ? "i-ph-clock-bold" : "i-ph-clock-bold"
       });
     }
   }, 1000);

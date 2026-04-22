@@ -1,147 +1,200 @@
 <template>
-  <UContainer class="space-y-6">
-    <!-- Selector de tipo de conversión -->
-    <div class="space-y-2">
-      <label class="text-small font-medium text-foreground-700">
-        Tipo de conversión
-      </label>
-      <USelect
-      v-model="conversionType"
-        placeholder="Selecciona el tipo"
-        variant="bordered"
-        @change="updateUnits"
-      >
-        <SelectItem key="length">Longitud</SelectItem>
-        <SelectItem key="weight">Peso</SelectItem>
-        <SelectItem key="temperature">Temperatura</SelectItem>
-        <SelectItem key="speed">Velocidad</SelectItem>
-      </USelect>
-    </div>
+  <div class="space-y-6">
+    <UTabs v-model="selectedTypeIndex" :items="tabsItems" :ui="{ wrapper: 'justify-start' }" @change="selectType" />
 
-    <!-- Conversión -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="space-y-2">
-        <label class="text-small font-medium text-foreground-700">De</label>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="space-y-4">
+        <label class="text-sm font-medium text-foreground-700">De</label>
         <div class="flex gap-2">
-          <UInput
-          v-model="fromValue"
-            type="number"
-            placeholder="1"
-            variant="bordered"
+          <UInputNumber
+            v-model="fromValue"
+            :min="0"
+            :step="1"
+            variant="outline"
             class="flex-1"
-            
-            @input="convert"
+            placeholder="0"
+            @update:model-value="saveToHistory"
           />
-          <USelect
-          v-model="fromUnit"
-            variant="bordered"
-            class="w-40"
-            
-            @change="convert"
-          >
-            <SelectItem v-for="unit in availableUnits" :key="unit.key">
-              {{ unit.label }}
-            </SelectItem>
-          </USelect>
+          <USelectMenu
+            v-model="fromUnit"
+            :items="unitsItems"
+            variant="outline"
+            class="w-36"
+            value-key="key"
+          />
         </div>
       </div>
-      
-      <div class="space-y-2">
-        <label class="text-small font-medium text-foreground-700">A</label>
+
+      <div class="flex items-center justify-center lg:justify-start lg:pt-6">
+        <UButton
+          variant="soft"
+          size="sm"
+          icon="i-ph-arrows-left-right-bold"
+          @click="swapUnits"
+        />
+      </div>
+
+      <div class="space-y-4">
+        <label class="text-sm font-medium text-foreground-700">A</label>
         <div class="flex gap-2">
           <UInput
-            type="number"
-            :value="toValue"
+            :model-value="formattedResult"
             readonly
-            variant="bordered"
+            variant="outline"
             class="flex-1 bg-default-50"
+            placeholder="0"
           />
-          <USelect
-          v-model="toUnit"
-            variant="bordered"
-            class="w-40"
-            
-            @change="convert"
-          >
-            <SelectItem v-for="unit in availableUnits" :key="unit.key">
-              {{ unit.label }}
-            </SelectItem>
-          </USelect>
+          <USelectMenu
+            v-model="toUnit"
+            :items="unitsItems"
+            variant="outline"
+            class="w-36"
+            value-key="key"
+          />
         </div>
       </div>
     </div>
 
-    <!-- Resultado destacado -->
-    <UCard class="bg-secondary/5 border border-secondary/20">
-      <UContainer class="text-center py-6">
-        <Icon icon="ph:scales-bold" class="mx-auto h-6 w-6 text-secondary mb-2" />
-        <p class="text-lg">
-          <span class="font-bold">{{ fromValue }} {{ fromUnit }}</span> = 
-          <span class="font-bold text-secondary"> {{ toValue }} {{ toUnit }}</span>
+    <UCard class="bg-gradient-to-r from-secondary/10 to-secondary/5 border border-secondary/20">
+      <div class="text-center py-6">
+        <UIcon :name="selectedType.icon" class="mx-auto size-8 text-secondary mb-3" />
+        <p class="text-2xl font-bold text-secondary mb-1">
+          {{ fromValue || 0 }} {{ fromUnitSymbol }} =
         </p>
-      </UContainer>
+        <p class="text-3xl font-bold text-foreground">
+          {{ formattedResult || 0 }} {{ toUnitSymbol }}
+        </p>
+        <div class="flex gap-2 justify-center mt-4">
+          <UButton
+            variant="outline"
+            size="sm"
+            icon="i-ph-copy-bold"
+            @click="copyResult"
+          />
+          <UButton
+            variant="ghost"
+            size="sm"
+            icon="i-ph-clock-clockwise-bold"
+            @click="showHistory = !showHistory"
+          >
+            Historial
+          </UButton>
+        </div>
+      </div>
     </UCard>
-  </UContainer>
+
+    <Transition name="slide">
+      <UCard v-if="showHistory" class="border border-foreground-200 dark:border-foreground-700">
+        <template #header>
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-semibold">Historial de conversiones</h3>
+            <UButton
+              variant="ghost"
+              size="sm"
+              icon="i-ph-trash-bold"
+              @click="clearHistory"
+            />
+          </div>
+        </template>
+        <div v-if="history.length === 0" class="py-8 text-center">
+          <UIcon name="i-ph-clock-clockwise-bold" class="mx-auto size-10 text-foreground-300 mb-2" />
+          <p class="text-sm text-foreground-400">Sin conversiones recientes</p>
+        </div>
+        <div v-else class="space-y-2 max-h-64 overflow-y-auto">
+          <div
+            v-for="(entry, index) in history"
+            :key="index"
+            class="flex items-center justify-between p-2 rounded-lg hover:bg-default-50 cursor-pointer transition-colors"
+            @click="applyFromHistory(entry)"
+          >
+            <div class="flex items-center gap-2">
+              <UIcon name="i-ph-arrows-left-right-bold" class="size-4 text-foreground-400" />
+              <span class="text-sm">
+                <span class="font-medium">{{ entry.fromValue }}</span>
+                <span class="text-foreground-400">{{ entry.from }}</span>
+                <span class="mx-1">=</span>
+                <span class="font-medium">{{ entry.toValue }}</span>
+                <span class="text-foreground-400">{{ entry.to }}</span>
+              </span>
+            </div>
+            <span class="text-xs text-foreground-400">{{ entry.type }}</span>
+          </div>
+        </div>
+      </UCard>
+    </Transition>
+  </div>
 </template>
 
-<script setup>
-import { Icon } from '@iconify/vue'
+<script setup lang="ts">
+const toast = useToast()
+const {
+  conversionTypes,
+  selectedTypeIndex,
+  selectedType,
+  fromValue,
+  fromUnit,
+  toUnit,
+  availableUnits,
+  formattedResult,
+  swapUnits,
+  selectType,
+  saveToHistory,
+  clearHistory,
+  applyFromHistory,
+  showHistory,
+  history
+} = useUnitConverter()
 
-// Estados reactivos
-const conversionType = ref('length')
-const fromValue = ref(1)
-const toValue = ref('1000')
-const fromUnit = ref('m')
-const toUnit = ref('cm')
+const tabsItems = computed(() =>
+  conversionTypes.value.map(type => ({
+    label: type.label,
+    icon: type.icon
+  }))
+)
 
-// Unidades disponibles por tipo
-const unitTypes = {
-  length: [
-    { key: 'mm', label: 'Milímetros' },
-    { key: 'cm', label: 'Centímetros' },
-    { key: 'm', label: 'Metros' },
-    { key: 'km', label: 'Kilómetros' },
-    { key: 'in', label: 'Pulgadas' },
-    { key: 'ft', label: 'Pies' },
-    { key: 'mi', label: 'Millas' }
-  ],
-  weight: [
-    { key: 'g', label: 'Gramos' },
-    { key: 'kg', label: 'Kilogramos' },
-    { key: 'lb', label: 'Libras' },
-    { key: 'oz', label: 'Onzas' }
-  ],
-  temperature: [
-    { key: 'c', label: 'Celsius' },
-    { key: 'f', label: 'Fahrenheit' },
-    { key: 'k', label: 'Kelvin' }
-  ],
-  speed: [
-    { key: 'kmh', label: 'km/h' },
-    { key: 'mph', label: 'mph' },
-    { key: 'ms', label: 'm/s' }
-  ]
-}
+const unitsItems = computed(() =>
+  availableUnits.value.map(unit => ({
+    label: `${unit.label} (${unit.symbol})`,
+    key: unit.key,
+    value: unit.key
+  }))
+)
 
-const availableUnits = computed(() => unitTypes[conversionType.value] || [])
+const fromUnitSymbol = computed(() => {
+  const unit = availableUnits.value.find(u => u.key === fromUnit.value)
+  return unit?.symbol || fromUnit.value
+})
 
-// Actualizar unidades cuando cambia el tipo
-const updateUnits = () => {
-  const units = availableUnits.value
-  if (units.length > 0) {
-    fromUnit.value = units[0].key
-    toUnit.value = units[1]?.key || units[0].key
-    convert()
-  }
-}
+const toUnitSymbol = computed(() => {
+  const unit = availableUnits.value.find(u => u.key === toUnit.value)
+  return unit?.symbol || toUnit.value
+})
 
-// Función de conversión (placeholder)
-const convert = () => {
-  // Aquí iría la lógica real de conversión
-  if (conversionType.value === 'length' && fromUnit.value === 'm' && toUnit.value === 'cm') {
-    toValue.value = (fromValue.value * 100).toString()
-  } else {
-    toValue.value = (fromValue.value * 1.5).toFixed(2).toString() // Placeholder
+const copyResult = async () => {
+  const text = `${fromValue.value || 0} ${fromUnitSymbol.value} = ${formattedResult.value} ${toUnitSymbol.value}`
+  try {
+    await navigator.clipboard.writeText(text)
+    toast.add({
+      title: 'Copiado',
+      description: text,
+      color: 'success',
+      icon: 'i-ph-check-circle-bold'
+    })
+  } catch {
+    console.error('Error copying to clipboard')
   }
 }
 </script>
+
+<style scoped>
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+</style>

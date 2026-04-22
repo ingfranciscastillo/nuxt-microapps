@@ -6,7 +6,7 @@
         <UButton
           variant="light"
           size="sm"
-          icon="ph:list-bold"
+          icon="i-ph-list-bold"
           class="lg:hidden"
           @click="$emit('toggleSidebar')"
         />
@@ -14,12 +14,7 @@
 
 
       <template #right>
-        <UButton
-          variant="ghost"
-          size="sm"
-          :icon="themeStore.isDark ? 'ph:sun-bold' : 'ph:moon-bold'"
-            @click="themeStore.toggleTheme()"
-          />
+        <UColorModeButton />
       </template>
 
   </UDashboardNavbar>
@@ -30,7 +25,6 @@
 defineEmits(['toggleSidebar'])
 
 const route = useRoute()
-const themeStore = useThemeStore()
 
 // Títulos y subtítulos de páginas
 const pageData = {

@@ -1,131 +1,216 @@
 <template>
   <div class="space-y-6">
-    <!-- Formulario de conversión -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div>
-        <label class="block mb-2 text-small font-medium text-foreground-700">
-          Cantidad y moneda de origen
-        </label>
-        <div class="flex gap-2">
-          <UInputNumber
-            v-model="fromAmount"
-            placeholder="1"
-            variant="outline"
-            class="flex-1"
-            :is-disabled="loadingCurrencies"
-          />
-          <USelectMenu
-            v-model="fromCurrency"
-            :placeholder="loadingCurrencies ? 'Cargando...' : 'USD'"
-            variant="outline"
-            class="w-32"
-            :items="currencies"
-            :is-disabled="loadingCurrencies"
-            value-key="value"
-          />
-        </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <label class="text-sm font-medium text-foreground-700">Cantidad</label>
+        <UInputNumber
+          v-model="fromAmount"
+          :min="0"
+          :step="1"
+          variant="outline"
+          class="w-full"
+          placeholder="1"
+        />
       </div>
-      
-      <div>
-        <label class="block mb-2 text-small font-medium text-foreground-700">
-          Moneda de destino
-        </label>
-          <USelectMenu
-            v-model="toCurrency"
-            :placeholder="loadingCurrencies ? 'Cargando...' : 'EUR'"
-            variant="outline"
-            class="w-32"
-            :items="currencies"
-            :is-disabled="loadingCurrencies"
-            value-key="value"
-          />
+
+      <div class="space-y-2">
+        <label class="text-sm font-medium text-foreground-700">De</label>
+        <USelectMenu
+          v-model="fromCurrency"
+          :items="currencyItems"
+          placeholder="Selecciona moneda"
+          variant="outline"
+          class="w-full"
+          value-key="code"
+        >
+          <template #option="{ item }">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">{{ item.flag }}</span>
+              <span class="font-medium">{{ item.code }}</span>
+              <span class="text-foreground-400 text-sm">{{ item.name }}</span>
+            </div>
+          </template>
+        </USelectMenu>
       </div>
     </div>
 
-    <UCard class="bg-primary/5 border border-primary/20">
-      <UContainer class="text-center py-8">
-        <Icon icon="ph:currency-dollar-bold" class="mx-auto h-8 w-8 text-primary mb-2" />
-        <p class="text-small text-foreground-600">Resultado</p>
-        <p class="text-2xl font-bold text-primary mb-1">
-          {{ convertedAmount }} {{ toCurrency }}
+    <div class="flex justify-center">
+      <UButton
+        variant="soft"
+        size="sm"
+        icon="i-ph-arrows-left-right-bold"
+        @click="swapCurrencies"
+      >
+        Intercambiar
+      </UButton>
+    </div>
+
+    <div class="space-y-2">
+      <label class="text-sm font-medium text-foreground-700">A</label>
+      <USelectMenu
+        v-model="toCurrency"
+        :items="currencyItems"
+        placeholder="Selecciona moneda"
+        variant="outline"
+        class="w-full"
+        value-key="code"
+      >
+        <template #option="{ item }">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">{{ item.flag }}</span>
+            <span class="font-medium">{{ item.code }}</span>
+            <span class="text-foreground-400 text-sm">{{ item.name }}</span>
+          </div>
+        </template>
+      </USelectMenu>
+    </div>
+
+    <UCard class="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20">
+      <div class="text-center py-6">
+        <UIcon name="i-ph-currency-dollar-bold" class="mx-auto size-8 text-primary mb-3" />
+        <p class="text-sm text-foreground-500 mb-2">
+          {{ fromAmount | number }} {{ fromCurrency }} =
         </p>
-        <p class="text-tiny text-foreground-400">
-          Tasa: 1 {{ fromCurrency }} = {{ exchangeRate }} {{ toCurrency }}
+        <p class="text-4xl font-bold text-primary mb-2">
+          {{ convertedAmount | number }} {{ toCurrency }}
         </p>
-      </UContainer>
+        <p class="text-xs text-foreground-400">
+          1 {{ fromCurrency }} = {{ exchangeRate }} {{ toCurrency }}
+        </p>
+        <div class="flex gap-2 justify-center mt-4">
+          <UButton
+            variant="outline"
+            size="sm"
+            icon="i-ph-copy-bold"
+            @click="copyResult"
+          />
+          <UButton
+            variant="ghost"
+            size="sm"
+            icon="i-ph-clock-clockwise-bold"
+            @click="showHistory = !showHistory"
+          >
+            Historial
+          </UButton>
+        </div>
+      </div>
     </UCard>
 
-    <UButton
-      color="primary"
-      size="lg"
-      class="w-full"
-      :is-loading="isLoading"
-      @click="convertCurrency"
-    >
-      <Icon icon="ph:arrows-left-right-bold" class="w-4 h-4 mr-2" />
-      {{ isLoading ? "Cargando..." : "Convertir" }}
-    </UButton>
+    <Transition name="slide">
+      <UCard v-if="showHistory" class="border border-foreground-200 dark:border-foreground-700">
+        <template #header>
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-semibold">Historial</h3>
+            <UButton
+              variant="ghost"
+              size="sm"
+              icon="i-ph-trash-bold"
+              @click="clearHistory"
+            />
+          </div>
+        </template>
+        <div v-if="history.length === 0" class="py-8 text-center">
+          <UIcon name="i-ph-clock-clockwise-bold" class="mx-auto size-10 text-foreground-300 mb-2" />
+          <p class="text-sm text-foreground-400">Sin conversiones recientes</p>
+        </div>
+        <div v-else class="space-y-2 max-h-64 overflow-y-auto">
+          <div
+            v-for="(entry, index) in history"
+            :key="index"
+            class="flex items-center justify-between p-2 rounded-lg hover:bg-default-50 cursor-pointer transition-colors"
+            @click="applyFromHistory(entry)"
+          >
+            <div class="flex items-center gap-2">
+              <UIcon name="i-ph-arrows-left-right-bold" class="size-4 text-foreground-400" />
+              <span class="text-sm">
+                <span class="font-medium">{{ entry.fromAmount }}</span>
+                <span class="text-foreground-400">{{ entry.from }}</span>
+                <span class="mx-1">=</span>
+                <span class="font-medium">{{ entry.toAmount }}</span>
+                <span class="text-foreground-400">{{ entry.to }}</span>
+              </span>
+            </div>
+            <span class="text-xs text-foreground-400">{{ formatDate(entry.timestamp) }}</span>
+          </div>
+        </div>
+      </UCard>
+    </Transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
-import { ref, watch, computed } from "vue";
-import { useQuery } from "@tanstack/vue-query";
+const toast = useToast()
+const {
+  fromAmount,
+  fromCurrency,
+  toCurrency,
+  exchangeRate,
+  convertedAmount,
+  allCurrencies,
+  swapCurrencies,
+  saveToHistory,
+  clearHistory,
+  applyFromHistory,
+  showHistory,
+  history,
+  fetchRate
+} = useCurrencyConverter()
 
-const fromAmount = ref<number>(1);
-const fromCurrency = ref<string>("USD");
-const toCurrency = ref<string>("EUR");
-const convertedAmount = ref<number | null>(null);
-const exchangeRate = ref<number | null>(null);
-const isLoading = ref<boolean>(false);
-const currencies = ref<{ label: string; value: string }[]>([]);
+const currencyItems = computed(() =>
+  allCurrencies.value.map(c => ({
+    code: c.code,
+    flag: c.flag,
+    name: c.name,
+    symbol: c.symbol
+  }))
+)
 
-const fetchCurrencies = async () => {
-  const res = await $fetch<{ items: { label: string; value: string }[] }>("/api/currencies");
-  return res.items;
-};
-
-const { data: currencyData, isLoading: loadingCurrencies } = useQuery({
-  queryKey: ["currencies"],
-  queryFn: fetchCurrencies,
-  refetchOnWindowFocus: false,
-  staleTime: 1000 * 60 * 60, // refresca cada hora o más
-});
-
-// Watcher para actualizar currencies cuando se carguen los datos
-watch(currencyData, (newData) => {
-  if (newData) {
-    currencies.value = newData;
+const copyResult = async () => {
+  const text = `${fromAmount.value} ${fromCurrency.value} = ${convertedAmount.value} ${toCurrency.value}`
+  try {
+    await navigator.clipboard.writeText(text)
+    saveToHistory()
+    toast.add({
+      title: 'Copiado',
+      description: text,
+      color: 'success',
+      icon: 'i-ph-check-circle-bold'
+    })
+  } catch {
+    console.error('Error copying to clipboard')
   }
-}, { immediate: true });
-
-const fetchRate = async () => {
-  const {conversion_rate} = await $fetch("/api/exchange-rate", {
-    query: {
-      from: fromCurrency.value,
-      to: toCurrency.value
-    }
-  });
-  return conversion_rate;
 }
 
-const { data, isFetching, refetch } = useQuery({
-  queryKey: ["exchange-rate", fromCurrency, toCurrency],
-  queryFn: fetchRate,
-  enabled: computed(() => !loadingCurrencies.value && !!fromCurrency.value && !!toCurrency.value),
-});
+const formatDate = (timestamp: number) => {
+  const date = new Date(timestamp)
+  return date.toLocaleDateString('es-ES', {
+    day: '2-digit',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
 
-watch([data, isFetching], () => {
-  isLoading.value = isFetching.value;
-  if (data.value) {
-    exchangeRate.value = data.value;
-    convertedAmount.value = Number((fromAmount.value * data.value).toFixed(2));
+watch([fromAmount, fromCurrency, toCurrency], () => {
+  if (convertedAmount.value) {
+    saveToHistory()
   }
-});
+})
 
-const convertCurrency = async () => {
-  await refetch();
-};
-
+onMounted(() => {
+  fetchRate()
+})
 </script>
+
+<style scoped>
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+</style>
