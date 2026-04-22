@@ -30,6 +30,11 @@ export default defineNuxtConfig({
     "/api/": {cache: {maxAge: 60 * 60}}
   },
   vite: {
+    optimizeDeps: {
+      include: [
+        "tanstack/vue-query"
+      ]
+    },
     plugins: [tailwindcss()],
   },
 
